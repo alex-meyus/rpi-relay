@@ -21,6 +21,9 @@ MQTT_USER="mqtt"
 MQTT_PW="mqtt"
 MQTT_PORT="1884"
 
+# GPIO init to HIGH (LED off)
+pinctrl set 5,6,13,16,19,20,21,26 op dh
+
 # MQTT-messages receiving & processing
 process_message() {
     topic=$1
@@ -37,11 +40,11 @@ process_message() {
     case $command in
         "true") #inverse Logik!
             # GPIO einschalten            
-            pinctrl set $gpio op dl
+            pinctrl set $gpio dl
             ;;
         "false")
             # GPIO ausschalten
-            pinctrl set $gpio op dh
+            pinctrl set $gpio dh
             ;;
         *)
             echo "Unbekannter Befehl: $command"
