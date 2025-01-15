@@ -49,10 +49,10 @@ process_message() {
     esac
 }
 
-# MQTT-Subscription starten
+# MQTT-Subscription starting
 mosquitto_sub -h $MQTT_SERVER -p $MQTT_PORT -u $MQTT_USER -P $MQTT_PW -t $MQTT_TOPIC -v | while read -r line
 do
-    echo "Read from mqtt: >>"$line"<<"
+    if [ $DEBUG = 1 ]; echo "Read from mqtt: >>"$line"<<"; fi
     topic=$(echo $line | cut -d' ' -f1)
     #topic=$(echo $line | cut -d' ' -f1 | cut -d'/' -f2)
     if [ $DEBUG = 1 ]; then echo "mqtt-t"$topic; fi
