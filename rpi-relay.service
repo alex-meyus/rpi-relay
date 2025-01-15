@@ -1,0 +1,9 @@
+[Unit]
+Description=RPi-Relay-Script
+
+[Service]
+ExecStart=/home/alex/rpi-relay/gpio_mqtt_control.sh
+Restart=always
+
+[Install]
+WantedBy=multi-user.target
