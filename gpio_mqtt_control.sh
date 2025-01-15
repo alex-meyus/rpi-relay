@@ -11,35 +11,36 @@
 #Channel label	40	P29	21	Channel 7
 #Channel label	37	P25	26	Channel 8
 
-# MQTT-Einstellungen
+# Debug switch
+DEBUG=0
+
+# MQTT-Setting - edit to your own
 MQTT_SERVER="srv-iobroker"
-MQTT_TOPIC="gpio/#"
+MQTT_TOPIC="gpio/#" #MQTT message in IoBroker: mqtt.0.gpio.6
 MQTT_USER="mqtt"
 MQTT_PW="mqtt"
 MQTT_PORT="1884"
 
-# MQTT-Nachrichten verarbeiten
+# MQTT-messages receiving & processing
 process_message() {
     topic=$1
-    echo "pm1:"$1
+    if [ $DEBUG = 1 ]; then echo "pm1:"$1; fi
     message=$2
-    echo "pm2:"$2
+    if [ $DEBUG = 1 ]; then echo "pm2:"$2; fi
     
     # GPIO-Nummer aus dem Topic extrahieren
     gpio=$(echo $topic | cut -d'/' -f2)
-    echo "pm3:"$gpio
+    if [ $DEBUG = 1 ]; then echo "pm3:"$gpio; fi
     # Befehl aus der Nachricht extrahieren
     command=$message
     
     case $command in
         "true") #inverse Logik!
-            # GPIO einschalten
-            #echo "1" > /sys/class/gpio/gpio$gpio/value
+            # GPIO einschalten            
             pinctrl set $gpio op dl
             ;;
         "false")
             # GPIO ausschalten
-            #echo "0" > /sys/class/gpio/gpio$gpio/value
             pinctrl set $gpio op dh
             ;;
         *)
@@ -54,8 +55,8 @@ do
     echo "Read from mqtt: >>"$line"<<"
     topic=$(echo $line | cut -d' ' -f1)
     #topic=$(echo $line | cut -d' ' -f1 | cut -d'/' -f2)
-    echo $topic
+    if [ $DEBUG = 1 ]; then echo "mqtt-t"$topic; fi
     message=$(echo $line | cut -d' ' -f2-)
-    echo $message
+    if [ $DEBUG = 1 ]; then echo "mqtt-m:"$message; fi
     process_message "$topic" "$message"
 done
